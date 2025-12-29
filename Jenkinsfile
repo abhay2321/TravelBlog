@@ -26,27 +26,15 @@ pipeline {
       }
     }
 
-    stage('Deploy Backend') {
+    stage('Deploy') {
       steps {
         sh '''
-          docker rm -f tb-backend || true
-          docker run -d \
-            --name tb-backend \
-            -p 8083:5000 \
-            -e MONGO_URI=$MONGO_URI \
-            travelblog-backend
-        '''
-      }
-    }
-
-    stage('Deploy Frontend') {
-      steps {
-        sh '''
-          docker rm -f tb-frontend || true
-          docker run -d \
-            --name tb-frontend \
-            -p 80:80 \
-            travelblog-frontend
+          # Stop conflicting containers if running manually before
+          docker rm -f tb-backend tb-frontend || true
+          
+          # Start using Docker Compose
+          # MONGO_URI is injected by Jenkins environment
+          docker compose up -d --remove-orphans
         '''
       }
     }
