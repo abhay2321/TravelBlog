@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '@/config/api';
 import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -97,7 +97,7 @@ function AddBlog() {
     e.preventDefault();
     if (validateFormData()) {
       try {
-        const response = await axios.post((import.meta.env.VITE_API_PATH || 'http://localhost:5000') + '/api/posts/', formData);
+        const response = await api.post('/api/posts/', formData);
 
         if (response.status === 200) {
           toast.success('Blog post successfully created!');
