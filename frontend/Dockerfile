@@ -7,6 +7,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
 COPY . .
+# Copy .env.docker to .env so Vite can use it during build
+RUN cp .env.docker .env || true
 RUN npm run build
 
 
