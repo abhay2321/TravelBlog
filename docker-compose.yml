@@ -6,7 +6,7 @@ services:
     image: travelblog-backend
     container_name: tb-backend
     ports:
-      - "8083:5000"
+      - "8083:5001" 
     environment:
       - MONGO_URI=${MONGO_URI}
     restart: always
