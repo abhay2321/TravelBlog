@@ -29,12 +29,12 @@ pipeline {
     stage('Deploy') {
       steps {
         sh '''
-          # Stop conflicting containers if running manually before
+          # Step 3: Stop old containers
           docker rm -f tb-backend tb-frontend || true
           
-          # Start using Docker Compose
-          # MONGO_URI is injected by Jenkins environment
-          docker compose up -d --remove-orphans
+          # Step 4: Start EVERYTHING (ONE COMMAND)
+          # MONGO_URI is passed from Jenkins environment variables
+          docker compose up -d
         '''
       }
     }
