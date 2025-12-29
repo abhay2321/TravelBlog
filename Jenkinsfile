@@ -21,7 +21,8 @@ pipeline {
 
     stage('Build Frontend Image') {
       steps {
-        sh 'docker build -t travelblog-frontend ./frontend'
+        // Injecting the production backend URL during build
+        sh 'docker build --build-arg VITE_API_PATH=http://3.224.211.62:8083 -t travelblog-frontend ./frontend'
       }
     }
 
