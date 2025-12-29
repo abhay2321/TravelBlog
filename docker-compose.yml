@@ -1,39 +1,21 @@
 version: "3.8"
+
 services:
-  mongodb:
-    container_name: mongo-service
-    image: mongo:latest
-    volumes:
-      - ./backend/data:/data
-    ports:
-      - "27017:27017"
 
   backend:
-    container_name: backend
-    build: ./backend
-    env_file:
-      - ./backend/.env.docker
+    image: travelblog-backend
+    container_name: tb-backend
     ports:
-      - "31100:8080"
-    depends_on:
-      - mongodb
+      - "8083:5000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    restart: always
 
   frontend:
-    container_name: frontend
-    build: ./frontend
-    env_file:
-      - ./frontend/.env.docker
+    image: travelblog-frontend
+    container_name: tb-frontend
     ports:
-      - "5173:80"
-
-  redis:
-    container_name: redis-service
-    restart: unless-stopped
-    image: redis:7.0.5-alpine 
-    expose:
-        - 6379
+      - "80:80"
     depends_on:
-      - mongodb
-
-volumes:
-  data:
+      - backend
+    restart: always
