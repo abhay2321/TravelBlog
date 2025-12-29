@@ -2,8 +2,7 @@ pipeline {
   agent any
 
   environment {
-    // Ensure you have a 'Secret text' credential with ID 'MONGO_URI' in Jenkins
-    MONGO_CRED = credentials('MONGO_URI')
+    MONGO_URI = credentials('MONGO_URI')
   }
 
   stages {
@@ -33,7 +32,7 @@ pipeline {
           docker run -d \
             --name tb-backend \
             -p 8083:5000 \
-            -e MONGODB_URI=$MONGO_CRED \
+            -e MONGO_URI=$MONGO_URI \
             travelblog-backend
         '''
       }
@@ -53,9 +52,8 @@ pipeline {
 
     stage('Trivy Scan Backend') {
       steps {
-        // Continue on failure so deployment isn't blocked by scan results
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-            sh 'trivy image travelblog-backend --no-progress'
+          sh 'trivy image travelblog-backend --no-progress'
         }
       }
     }
@@ -63,7 +61,7 @@ pipeline {
     stage('Trivy Scan Frontend') {
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-            sh 'trivy image travelblog-frontend --no-progress'
+          sh 'trivy image travelblog-frontend --no-progress'
         }
       }
     }
