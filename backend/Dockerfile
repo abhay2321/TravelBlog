@@ -1,31 +1,16 @@
-# Stage 1
-FROM node:21 AS backend-builder
+FROM node:18-alpine
 
-# setup the working dir
 WORKDIR /app
 
-# code
+# copy only dependency files first (cache friendly)
+COPY package.json package-lock.json ./
+
+# install only production deps (low memory)
+RUN npm ci --only=production --no-audit --no-fund
+
+# copy remaining code
 COPY . .
 
-# packages install
-RUN npm i
+EXPOSE 8083
 
-# tests
-RUN npm run test
-
-# Stage 2
-FROM node:21-slim
-
-# setup the working dir
-WORKDIR /app
-
-# copy the above stage as compressed
-COPY --from=backend-builder /app .
-
-COPY .env.docker .env
-
-# Port
-EXPOSE 8080
-
-# App
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
